@@ -13,7 +13,15 @@ exports.orderExists = catchAsync(async (req, res, next) => {
     where: { id, status: 'active' },
     include: [
       { model: User, attributes: { exclude: ['password'] } },
-      { model: Cart }
+      {
+        model: Cart,
+        include: [
+          {
+            model: Product,
+            through: { where: { status: 'purchaser' } }
+          }
+        ]
+      }
     ]
   });
 
