@@ -6,6 +6,7 @@ const dotenv = require('dotenv');
 const { User } = require('../models/user.model');
 const { Product } = require('../models/product.model');
 const { Order } = require('../models/order.model');
+const { Cart } = require('../models/cart.model');
 
 // Utils
 const { catchAsync } = require('../util/catchAsync');
@@ -122,8 +123,27 @@ exports.getAllOrderUser = catchAsync(async (req, res, next) => {
 });
 
 exports.getAOrderUserById = catchAsync(async (req, res, next) => {
-  const { order } = req;
+  const { id } = req.params;
 
+  const order = await Order.findOne({
+    where: { id, status: 'active' },
+    include: [
+      { model: User, attributes: { exclude: ['password'] } },
+      {
+        model: Cart,
+        include: [
+          {
+            model: Product,
+            through: { where: { status: 'purchaser' } }
+          }
+        ]
+      }
+    ]
+  });
+
+  if (!order) {
+    return next(new AppError(404, 'No order found with that ID'));
+  }
   res.status(200).json({
     status: 'success',
     data: { order }

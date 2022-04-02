@@ -36,7 +36,7 @@ router.get('/me', getUsersProducts);
 
 router.get('/orders', getAllOrderUser);
 
-router.get('/order/:id', orderExists, getAOrderUserById);
+router.get('/orders/:id', getAOrderUserById);
 
 router
   .use('/:id', userExists)

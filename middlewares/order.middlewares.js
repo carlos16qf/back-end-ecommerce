@@ -10,7 +10,7 @@ exports.orderExists = catchAsync(async (req, res, next) => {
   const { id } = req.params;
 
   const order = await Order.findOne({
-    where: { id, status: 'active' },
+    where: { id, status: 'purchaser' },
     include: [
       { model: User, attributes: { exclude: ['password'] } },
       {
